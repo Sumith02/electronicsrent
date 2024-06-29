@@ -1,9 +1,7 @@
-//import 'package:electronicsrent/Screens/authentication_screen/phone_auth.dart';
-//import 'package:electronicsrent/Screens/location_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:electronicsrent/Screens/services/phoneauth_services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:electronicsrent/Screens/services/phoneauth_services.dart';
 
 class OtpScreen extends StatefulWidget {
   final String number, verId;
@@ -19,19 +17,18 @@ class _OtpScreenState extends State<OtpScreen> {
 
   PhoneAuthServices _services = PhoneAuthServices();
 
-  var _text1 = TextEditingController();
-  var _text2 = TextEditingController();
-  var _text3 = TextEditingController();
-  var _text4 = TextEditingController();
-  var _text5 = TextEditingController();
-  var _text6 = TextEditingController();
+  final List<TextEditingController> _controllers =
+      List.generate(6, (_) => TextEditingController());
+  final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
 
   Future<void> phoneCredential(BuildContext context, String otp) async {
     FirebaseAuth _auth = FirebaseAuth.instance;
 
     try {
       PhoneAuthCredential credential = PhoneAuthProvider.credential(
-          verificationId: widget.verId, smsCode: otp);
+        verificationId: widget.verId,
+        smsCode: otp,
+      );
 
       final User? user = (await _auth.signInWithCredential(credential)).user;
 
@@ -40,32 +37,31 @@ class _OtpScreenState extends State<OtpScreen> {
         //Navigator.pushReplacementNamed(context, LocationScreen.id);
       } else {
         print('Login failed');
-        if (mounted) {
-          setState(() {
-            error = 'Login failed';
-          });
-        }
+        setState(() {
+          error = 'Login failed';
+        });
       }
     } catch (e) {
       print(e.toString());
-      if (mounted) {
-        setState(() {
-          error = 'Invalid OTP';
-        });
-      }
+      setState(() {
+        error = 'Invalid OTP';
+      });
+    } finally {
+      setState(() {
+        _loading = false;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final node = FocusScope.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('Login'),
         automaticallyImplyLeading: false, // to remove back screen
       ),
       body: Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -102,11 +98,13 @@ class _OtpScreenState extends State<OtpScreen> {
                             style: TextStyle(fontSize: 20, color: Colors.amber),
                             children: [
                               TextSpan(
-                                  text: widget.number,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.amber,
-                                      fontSize: 18)),
+                                text: widget.number,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.amber,
+                                  fontSize: 18,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -121,126 +119,47 @@ class _OtpScreenState extends State<OtpScreen> {
                   ),
                   SizedBox(height: 80),
                   Row(
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                          controller: _text1,
-                          textInputAction: TextInputAction.next,
-                          textAlign: TextAlign.center,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                          ),
-                          onChanged: (value) {
-                            if (value.length == 1) {
-                              node.nextFocus();
-                            }
-                          },
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: TextFormField(
-                          controller: _text2,
-                          textInputAction: TextInputAction.next,
-                          textAlign: TextAlign.center,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                          ),
-                          onChanged: (value) {
-                            if (value.length == 1) {
-                              node.nextFocus();
-                            }
-                          },
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: TextFormField(
-                          controller: _text3,
-                          textInputAction: TextInputAction.next,
-                          textAlign: TextAlign.center,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                          ),
-                          onChanged: (value) {
-                            if (value.length == 1) {
-                              node.nextFocus();
-                            }
-                          },
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: TextFormField(
-                          controller: _text4,
-                          textInputAction: TextInputAction.next,
-                          textAlign: TextAlign.center,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                          ),
-                          onChanged: (value) {
-                            if (value.length == 1) {
-                              node.nextFocus();
-                            }
-                          },
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: TextFormField(
-                          controller: _text5,
-                          textInputAction: TextInputAction.next,
-                          textAlign: TextAlign.center,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                          ),
-                          onChanged: (value) {
-                            if (value.length == 1) {
-                              node.nextFocus();
-                            }
-                          },
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: TextFormField(
-                          controller: _text6,
-                          textInputAction: TextInputAction.done,
-                          textAlign: TextAlign.center,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                          ),
-                          onChanged: (value) {
-                            if (value.length == 1) {
-                              if (_text1.text.length == 1 &&
-                                  _text2.text.length == 1 &&
-                                  _text3.text.length == 1 &&
-                                  _text4.text.length == 1 &&
-                                  _text5.text.length == 1) {
-                                String _otp =
-                                    '${_text1.text}${_text2.text}${_text3.text}${_text4.text}${_text5.text}${_text6.text}';
-
-                                setState(() {
-                                  _loading = true;
-                                });
-
-                                phoneCredential(context, _otp);
+                    children: List.generate(6, (index) {
+                      return Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                          child: TextFormField(
+                            controller: _controllers[index],
+                            focusNode: _focusNodes[index],
+                            textInputAction: TextInputAction.next,
+                            textAlign: TextAlign.center,
+                            keyboardType: TextInputType.number,
+                            maxLength: 1,
+                            decoration: InputDecoration(
+                              counterText: '',
+                              border: OutlineInputBorder(),
+                            ),
+                            onChanged: (value) {
+                              if (value.isNotEmpty) {
+                                if (index < 5) {
+                                  FocusScope.of(context)
+                                      .requestFocus(_focusNodes[index + 1]);
+                                } else {
+                                  FocusScope.of(context).unfocus();
+                                  String otp = _controllers
+                                      .map((controller) => controller.text)
+                                      .join();
+                                  if (otp.length == 6) {
+                                    setState(() {
+                                      _loading = true;
+                                    });
+                                    phoneCredential(context, otp);
+                                  }
+                                }
+                              } else if (value.isEmpty && index > 0) {
+                                FocusScope.of(context)
+                                    .requestFocus(_focusNodes[index - 1]);
                               }
-                            } else {
-                              setState(() {
-                                _loading = false;
-                              });
-                            }
-                          },
+                            },
+                          ),
                         ),
-                      ),
-                    ],
+                      );
+                    }),
                   ),
                   SizedBox(height: 50),
                   if (_loading)
@@ -248,7 +167,7 @@ class _OtpScreenState extends State<OtpScreen> {
                       alignment: Alignment.center,
                       child: SizedBox(
                         width: 50,
-                        child: LinearProgressIndicator(
+                        child: CircularProgressIndicator(
                           backgroundColor: Colors.grey.shade200,
                           valueColor: AlwaysStoppedAnimation<Color>(
                               Theme.of(context).primaryColor),

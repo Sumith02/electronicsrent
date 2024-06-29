@@ -46,6 +46,7 @@ dependencies:
   geocoding: ^3.0.0
   google_sign_in: ^6.2.1
   csc_picker: ^0.2.7
+  flutter_neumorphic: ^3.2.0
 
 dev_dependencies:
   flutter_test:
