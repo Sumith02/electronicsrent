@@ -29,36 +29,16 @@ class MyApp extends StatelessWidget {
         PhoneAuth.id: (context) => PhoneAuth(),
         LocationScreen.id: (context) => LocationScreen(),
         HomeScreen.id: (context) => HomeScreen(
-              locationData: 
+              locationData:
                   LocationData.fromMap({'latitude': 0, 'longitude': 0}),
               address: '',
             ),
         AuthPage.id: (context) => AuthPage(),
       },
     );
-    // return FutureBuilder(
-    //   future: Future.delayed(Duration(seconds: 2)),
-    //   builder: (context, AsyncSnapshot snapshot) {
-    //     if (snapshot.connectionState == ConnectionState.waiting) {
-    //       return MaterialApp(
-    //         home: SplashScreen(),
-    //         debugShowCheckedModeBanner: false,
-    //       );
-    //     } else {
-    //       return MaterialApp(
-    //         debugShowCheckedModeBanner: false,
-    //         home: LoginScreen(),
-    //         routes: {
-    //           //we will add  the screens here
-    //           LoginScreen.id: (context) => LoginScreen(),
-    //           PhoneAuth.id: (context) => PhoneAuth(),
-    //           LocationScreen.id: (context) => LocationScreen(),
-    //         },
-    //       );
-    //     }
-    //   },
-    // );
+   
   }
 }
 
 //we need a splash screen first. we will use package for that
+ 

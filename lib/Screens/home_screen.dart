@@ -1,3 +1,4 @@
+import 'package:electronicsrent/components/widget/banner_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart' as loc;
 import 'package:firebase_auth/firebase_auth.dart';
@@ -66,9 +67,11 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(12, 0, 12, 8),
+            padding: EdgeInsets.fromLTRB(12, 6, 12, 8),
             child: Column(
-              children: [],
+              children: [
+                BannerWidget(),
+              ],
             ),
           )
         ],

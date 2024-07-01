@@ -25,7 +25,7 @@ class AuthUi extends StatelessWidget {
               width: 220,
               child: ElevatedButton(
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.white),
+                  backgroundColor: WidgetStateProperty.all(Colors.white),
                 ),
                 onPressed: () {
                   Navigator.pushNamed(context, PhoneAuth.id);
