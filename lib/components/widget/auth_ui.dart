@@ -12,15 +12,19 @@ class AuthUi extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+  
     final googleAuthService =
         GoogleAuthService(); // create an instance of GoogleAuthService
 
     return Center(
       child: Padding(
+        
         padding: const EdgeInsets.all(8.0),
         child: Column(
+          
           mainAxisSize: MainAxisSize.min,
           children: [
+            
             SizedBox(
               width: 220,
               child: ElevatedButton(

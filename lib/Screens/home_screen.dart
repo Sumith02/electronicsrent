@@ -70,7 +70,7 @@ class HomeScreen extends StatelessWidget {
             padding: EdgeInsets.fromLTRB(12, 6, 12, 8),
             child: Column(
               children: [
-                BannerWidget(),
+                SlidingBannerWidget(), // Use SlidingBannerWidget for sliding banners
               ],
             ),
           )

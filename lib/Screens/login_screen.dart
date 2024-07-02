@@ -17,7 +17,7 @@ class LoginScreen extends StatelessWidget {
       }
     });
     return Scaffold(
-      backgroundColor: Colors.cyan.shade900,
+      backgroundColor: Color.fromARGB(197, 235, 235, 235),
       body: Column(
         children: [
           Expanded(
