@@ -113,7 +113,7 @@ class SlidingBannerWidget extends StatelessWidget {
           ),
           BannerWidget(
             imageUrl:
-                'https://firebasestorage.googleapis.com/v0/b/electronicsrent-aa920.appspot.com/o/banner%2F360_F_496471319_DbtjoUvKqyy2e9OfgBnK5mm2AXhKpa9m.jpg?alt=media&token=33634ba7-48cc-45ed-9a1c-addae90546b4',
+                'https://firebasestorage.googleapis.com/v0/b/electronicsrent-aa920.appspot.com/o/categories%2Ficons8-laptop-48.png?alt=media&token=c83a67c9-eec5-4e31-aaff-034ba4fba2f0',
             title: 'LAPTOP',
           ),
           BannerWidget(

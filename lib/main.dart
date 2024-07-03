@@ -1,5 +1,6 @@
 import 'package:electronicsrent/Screens/authentication_screen/auth.dart';
 import 'package:electronicsrent/Screens/authentication_screen/phone_auth.dart';
+import 'package:electronicsrent/Screens/categories/category_list.dart';
 import 'package:electronicsrent/Screens/home_screen.dart';
 import 'package:electronicsrent/Screens/location_screen.dart';
 import 'package:electronicsrent/Screens/login_screen.dart';
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
               address: '',
             ),
         AuthPage.id: (context) => AuthPage(),
+        CategoryList.id:(context)=>CategoryList(),
       },
     );
   }

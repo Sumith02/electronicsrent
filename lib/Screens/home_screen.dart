@@ -73,7 +73,8 @@ class HomeScreen extends StatelessWidget {
               children: [
                 SlidingBannerWidget(),
 
-                CategoryWidget(), // Use SlidingBannerWidget for sliding banners
+                CategoryWidget(),
+                // Use SlidingBannerWidget for sliding banners
               ],
             ),
           )
