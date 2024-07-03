@@ -1,16 +1,15 @@
+import 'package:electronicsrent/Screens/services/location_services.dart';
 import 'package:electronicsrent/components/widget/banner_widget.dart';
 import 'package:electronicsrent/components/widget/category_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:location/location.dart' as loc;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'login_screen.dart';
 
+
 class HomeScreen extends StatelessWidget {
   static const String id = 'home-screen';
-  final loc.LocationData locationData;
-  final String address;
 
-  HomeScreen({required this.locationData, required this.address});
+  HomeScreen();
 
   void _logout(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
@@ -19,10 +18,14 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final locationService = LocationService();
+    final locationData = locationService.locationData;
+    final address = locationService.address;
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text(address),
+        title: Text(address ?? 'No address found'),
         actions: [
           IconButton(
             icon: Icon(Icons.logout),
@@ -72,9 +75,7 @@ class HomeScreen extends StatelessWidget {
             child: Column(
               children: [
                 SlidingBannerWidget(),
-
                 CategoryWidget(),
-                // Use SlidingBannerWidget for sliding banners
               ],
             ),
           )

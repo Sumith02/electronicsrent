@@ -4,10 +4,11 @@ import 'package:electronicsrent/Screens/categories/category_list.dart';
 import 'package:electronicsrent/Screens/home_screen.dart';
 import 'package:electronicsrent/Screens/location_screen.dart';
 import 'package:electronicsrent/Screens/login_screen.dart';
+import 'package:electronicsrent/Screens/main_screen.dart';
 import 'package:electronicsrent/Screens/splash.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:location/location.dart';
+//import 'package:location/location.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,13 +30,10 @@ class MyApp extends StatelessWidget {
         LoginScreen.id: (context) => const LoginScreen(),
         PhoneAuth.id: (context) => PhoneAuth(),
         LocationScreen.id: (context) => LocationScreen(),
-        HomeScreen.id: (context) => HomeScreen(
-              locationData:
-                  LocationData.fromMap({'latitude': 0, 'longitude': 0}),
-              address: '',
-            ),
+        HomeScreen.id: (context) => HomeScreen( ),
         AuthPage.id: (context) => AuthPage(),
-        CategoryList.id:(context)=>CategoryList(),
+        CategoryList.id: (context) => CategoryList(),
+        MainScreen.id: (context) => MainScreen(),
       },
     );
   }

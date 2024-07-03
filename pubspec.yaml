@@ -47,6 +47,7 @@ dependencies:
   google_sign_in: ^6.2.1
   csc_picker: ^0.2.7
   flutter_neumorphic: ^3.2.0
+  curved_navigation_bar: ^1.0.6
 
 dev_dependencies:
   flutter_test:

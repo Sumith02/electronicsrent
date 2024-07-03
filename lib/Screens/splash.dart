@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:electronicsrent/Screens/home_screen.dart';
+//import 'package:electronicsrent/Screens/home_screen.dart';
+//import 'package:electronicsrent/Screens/location_screen.dart';
 import 'package:electronicsrent/Screens/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -42,21 +43,16 @@ class _SplashScreenState extends State<SplashScreen> {
         _permissionGranted = await location.requestPermission();
       }
 
-      loc.LocationData _locationData = await location.getLocation();
+      //loc.LocationData _locationData = await location.getLocation();
 
       // Get address from coordinates
-      String address = await _getAddressFromCoordinates(
-          _locationData.latitude!, _locationData.longitude!);
+      // String address = await _getAddressFromCoordinates(
+      //     _locationData.latitude!, _locationData.longitude!);
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HomeScreen(
-            locationData: _locationData,
-            address: address,
-          ),
-        ),
-      );
+      // Navigator.pushReplacement(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => LocationScreen()),
+      // );
     }
   }
 
