@@ -1,10 +1,11 @@
 import 'dart:async';
-
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:electronicsrent/Screens/location_screen.dart';
+import 'package:electronicsrent/Screens/home_screen.dart';
 import 'package:electronicsrent/Screens/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:location/location.dart' as loc;
+import 'package:geocoding/geocoding.dart' as geo;
 
 class SplashScreen extends StatefulWidget {
   static const String id = 'splash_screen';
@@ -20,15 +21,51 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(
       Duration(seconds: 3),
       () {
-        FirebaseAuth.instance.authStateChanges().listen((User? user) {
-          if (user == null) {
-            Navigator.pushReplacementNamed(context, LoginScreen.id);
-          } else {
-            Navigator.pushReplacementNamed(context, LocationScreen.id);
-          }
-        });
+        _checkAuthAndNavigate();
       },
     );
+  }
+
+  void _checkAuthAndNavigate() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      Navigator.pushReplacementNamed(context, LoginScreen.id);
+    } else {
+      loc.Location location = loc.Location();
+      bool _serviceEnabled = await location.serviceEnabled();
+      if (!_serviceEnabled) {
+        _serviceEnabled = await location.requestService();
+      }
+
+      loc.PermissionStatus _permissionGranted = await location.hasPermission();
+      if (_permissionGranted == loc.PermissionStatus.denied) {
+        _permissionGranted = await location.requestPermission();
+      }
+
+      loc.LocationData _locationData = await location.getLocation();
+
+      // Get address from coordinates
+      String address = await _getAddressFromCoordinates(
+          _locationData.latitude!, _locationData.longitude!);
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomeScreen(
+            locationData: _locationData,
+            address: address,
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<String> _getAddressFromCoordinates(
+      double latitude, double longitude) async {
+    List<geo.Placemark> placemarks =
+        await geo.placemarkFromCoordinates(latitude, longitude);
+    geo.Placemark place = placemarks[0];
+    return "${place.locality}, ${place.administrativeArea}, ${place.country}";
   }
 
   @override

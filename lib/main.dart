@@ -36,7 +36,6 @@ class MyApp extends StatelessWidget {
         AuthPage.id: (context) => AuthPage(),
       },
     );
-   
   }
 }
 

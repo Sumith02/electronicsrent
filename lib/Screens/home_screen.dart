@@ -1,4 +1,5 @@
 import 'package:electronicsrent/components/widget/banner_widget.dart';
+import 'package:electronicsrent/components/widget/category_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart' as loc;
 import 'package:firebase_auth/firebase_auth.dart';
@@ -70,7 +71,9 @@ class HomeScreen extends StatelessWidget {
             padding: EdgeInsets.fromLTRB(12, 6, 12, 8),
             child: Column(
               children: [
-                SlidingBannerWidget(), // Use SlidingBannerWidget for sliding banners
+                SlidingBannerWidget(),
+
+                CategoryWidget(), // Use SlidingBannerWidget for sliding banners
               ],
             ),
           )
