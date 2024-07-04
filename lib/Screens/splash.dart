@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'package:animated_text_kit/animated_text_kit.dart';
-//import 'package:electronicsrent/Screens/home_screen.dart';
-//import 'package:electronicsrent/Screens/location_screen.dart';
 import 'package:electronicsrent/Screens/login_screen.dart';
+import 'package:electronicsrent/Screens/location_screen.dart';
+import 'package:electronicsrent/Screens/services/location_services.dart';
+//import 'package:electronicsrent/Services/location_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart' as loc;
@@ -43,16 +44,19 @@ class _SplashScreenState extends State<SplashScreen> {
         _permissionGranted = await location.requestPermission();
       }
 
-      //loc.LocationData _locationData = await location.getLocation();
+      loc.LocationData _locationData = await location.getLocation();
 
       // Get address from coordinates
-      // String address = await _getAddressFromCoordinates(
-      //     _locationData.latitude!, _locationData.longitude!);
+      String address = await _getAddressFromCoordinates(
+          _locationData.latitude!, _locationData.longitude!);
 
-      // Navigator.pushReplacement(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => LocationScreen()),
-      // );
+      // Update the singleton with the new location data and address
+      LocationService().updateLocation(_locationData, address);
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LocationScreen()),
+      );
     }
   }
 
