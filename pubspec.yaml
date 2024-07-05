@@ -48,6 +48,8 @@ dependencies:
   csc_picker: ^0.2.7
   flutter_neumorphic: ^3.2.0
   curved_navigation_bar: ^1.0.6
+  intl: ^0.19.0
+  http: ^1.2.1
 
 dev_dependencies:
   flutter_test:

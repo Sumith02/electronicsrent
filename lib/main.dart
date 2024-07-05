@@ -5,6 +5,7 @@ import 'package:electronicsrent/Screens/home_screen.dart';
 import 'package:electronicsrent/Screens/location_screen.dart';
 import 'package:electronicsrent/Screens/login_screen.dart';
 import 'package:electronicsrent/Screens/main_screen.dart';
+import 'package:electronicsrent/Screens/price_dialog.dart';
 import 'package:electronicsrent/Screens/seller_category/seller_category.dart';
 import 'package:electronicsrent/Screens/splash.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -36,6 +37,7 @@ class MyApp extends StatelessWidget {
         CategoryList.id: (context) => CategoryList(),
         MainScreen.id: (context) => MainScreen(),
         SellerCategoryScreen.id: (context) => SellerCategoryScreen(),
+         PriceDialog.id: (context) => PriceDialog(),
       },
     );
   }
