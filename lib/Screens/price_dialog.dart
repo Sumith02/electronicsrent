@@ -14,7 +14,7 @@ class _PriceDialogState extends State<PriceDialog>
   final List<String> tabs = ['1-10 days', '11-20 days', '21-30 days'];
   late TabController _tabController;
 
-  // Data lists for different tabs
+  // Data maps for different tabs
   List<Map<String, dynamic>> prices1To10 = [];
   List<Map<String, dynamic>> prices11To20 = [];
   List<Map<String, dynamic>> prices21To30 = [];
@@ -32,20 +32,24 @@ class _PriceDialogState extends State<PriceDialog>
 
   Future<void> fetchPrices() async {
     try {
+      // Fetch data for 1-10 days
       QuerySnapshot snapshot1To10 = await FirebaseFirestore.instance
           .collection('prices')
           .where('tab', isEqualTo: '1-10 days')
           .get();
 
+      // Fetch data for 11-20 days
       QuerySnapshot snapshot11To20 = await FirebaseFirestore.instance
           .collection('prices')
           .where('tab', isEqualTo: '11-20 days')
           .get();
+
+      // Fetch data for 21-30 days
       QuerySnapshot snapshot21To30 = await FirebaseFirestore.instance
           .collection('prices')
           .where('tab', isEqualTo: '21-30 days')
           .get();
-      
+
       setState(() {
         prices1To10 = snapshot1To10.docs
             .map((doc) => doc.data() as Map<String, dynamic>)
@@ -89,6 +93,47 @@ class _PriceDialogState extends State<PriceDialog>
     super.dispose();
   }
 
+  Widget buildTable(List<Map<String, dynamic>> prices) {
+    return Table(
+      border: TableBorder.all(color: Colors.grey),
+      children: [
+        TableRow(
+          children: [
+            TableCell(child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text('Duration', style: TextStyle(fontWeight: FontWeight.bold)),
+            )),
+            TableCell(child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text('Per Day Rent', style: TextStyle(fontWeight: FontWeight.bold)),
+            )),
+            TableCell(child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text('Total Price', style: TextStyle(fontWeight: FontWeight.bold)),
+            )),
+          ],
+        ),
+        for (var price in prices)
+          TableRow(
+            children: [
+              TableCell(child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(price['duration']),
+              )),
+              TableCell(child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text("₹ ${price['perDayRent']} / day"),
+              )),
+              TableCell(child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text("₹ ${price['totalPrice']}"),
+              )),
+            ],
+          ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -114,30 +159,12 @@ class _PriceDialogState extends State<PriceDialog>
               child: Column(
                 children: [
                   Expanded(
-                    child: ListView.builder(
-                      itemCount: selectedTabIndex == 0
-                          ? prices1To10.length
+                    child: SingleChildScrollView(
+                      child: buildTable(selectedTabIndex == 0
+                          ? prices1To10
                           : selectedTabIndex == 1
-                              ? prices11To20.length
-                              : prices21To30.length,
-                      itemBuilder: (context, index) {
-                        final prices = selectedTabIndex == 0
-                            ? prices1To10
-                            : selectedTabIndex == 1
-                                ? prices11To20
-                                : prices21To30;
-                        return ListTile(
-                          title: Text(prices[index]["duration"]),
-                          subtitle: Text(
-                            "₹ ${prices[index]["perDayRent"]} / day",
-                            style: TextStyle(color: Colors.green),
-                          ),
-                          trailing: Text(
-                            "₹ ${prices[index]["totalPrice"] * selectedNumberOfDays}",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        );
-                      },
+                              ? prices11To20
+                              : prices21To30),
                     ),
                   ),
                   ElevatedButton.icon(
