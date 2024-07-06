@@ -19,6 +19,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locationService = LocationService();
+    // ignore: unused_local_variable
     final locationData = locationService.locationData;
     final address = locationService.address;
 

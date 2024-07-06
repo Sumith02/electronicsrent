@@ -1,3 +1,4 @@
+import 'package:electronicsrent/Screens/add_item_categories.dart';
 import 'package:electronicsrent/Screens/authentication_screen/auth.dart';
 import 'package:electronicsrent/Screens/authentication_screen/phone_auth.dart';
 import 'package:electronicsrent/Screens/categories/category_list.dart';
@@ -31,13 +32,15 @@ class MyApp extends StatelessWidget {
         SplashScreen.id: (context) => SplashScreen(),
         LoginScreen.id: (context) => const LoginScreen(),
         PhoneAuth.id: (context) => PhoneAuth(),
+        
         LocationScreen.id: (context) => LocationScreen(),
-        HomeScreen.id: (context) => HomeScreen( ),
+        HomeScreen.id: (context) => HomeScreen(),
         AuthPage.id: (context) => AuthPage(),
         CategoryList.id: (context) => CategoryList(),
         MainScreen.id: (context) => MainScreen(),
         SellerCategoryScreen.id: (context) => SellerCategoryScreen(),
-         PriceDialog.id: (context) => PriceDialog(),
+        PriceDialog.id: (context) => PriceDialog(),
+        ElectronicsItemForm.id: (context) => ElectronicsItemForm(),
       },
     );
   }

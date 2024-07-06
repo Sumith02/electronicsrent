@@ -1,7 +1,8 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:electronicsrent/Screens/add_item_categories.dart';
 import 'package:electronicsrent/Screens/home_screen.dart';
 import 'package:electronicsrent/Screens/price_dialog.dart';
-import 'package:electronicsrent/Screens/seller_category/seller_category.dart';
+//import 'package:electronicsrent/Screens/seller_category/seller_category.dart';
 import 'package:flutter/material.dart';
 //import 'package:electronicsrent/Screens/location_screen.dart';
 //import 'package:electronicsrent/Screens/home_screen.dart';
@@ -44,7 +45,7 @@ class _MainScreen extends State<MainScreen> {
               ),
               FloatingActionButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, SellerCategoryScreen.id);
+                  Navigator.pushNamed(context, ElectronicsItemForm.id);
                 },
                 child: Icon(
                   Icons.add,
