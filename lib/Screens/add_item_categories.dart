@@ -1,92 +1,69 @@
+import 'package:electronicsrent/Screens/services/database_service.dart';
+import 'package:electronicsrent/Screens/services/storage_service.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
-class ElectronicsItemForm extends StatefulWidget {
-  static const String id = 'electronics-item-form';
+
+import 'user_details_form_screen.dart';
+
+class ProductFormScreen extends StatefulWidget {
+  static const String id = 'product_form_screen';
+
   @override
-  _ElectronicsItemFormState createState() => _ElectronicsItemFormState();
+  _ProductFormScreenState createState() => _ProductFormScreenState();
 }
 
-class _ElectronicsItemFormState extends State<ElectronicsItemForm> {
+class _ProductFormScreenState extends State<ProductFormScreen> {
   final _formKey = GlobalKey<FormState>();
-
   String _name = '';
   String _category = '';
   double _price = 0.0;
   int _quantity = 0;
   String _description = '';
-  File? _image;
-  String? _imageUrl;
+  List<File> _images = [];
 
   final List<String> _categories = ['Laptop', 'Smartphone', 'Tablet', 'Accessory'];
 
-  final ImagePicker _picker = ImagePicker();
-
-  Future<void> _pickImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-
-    setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile.path);
-      } else {
-        print('No image selected.');
-      }
-    });
-  }
-
-  Future<void> _uploadImage() async {
-    if (_image != null) {
-      try {
-        final ref = FirebaseStorage.instance
-            .ref()
-            .child('electronics_images')
-            .child('${DateTime.now().millisecondsSinceEpoch}.jpg');
-
-        await ref.putFile(_image!);
-        _imageUrl = await ref.getDownloadURL();
-      } catch (e) {
-        print('Error uploading image: $e');
-      }
+  Future<void> _pickImages() async {
+    final pickedFiles = await ImagePicker().pickMultiImage();
+    if (pickedFiles != null) {
+      setState(() {
+        _images = pickedFiles.map((pickedFile) => File(pickedFile.path)).toList();
+      });
     }
   }
 
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-
-      // Upload the image first
-      await _uploadImage();
-
-      // Save to Firestore with error handling
-      try {
-        await FirebaseFirestore.instance.collection('electronics_items').add({
-          'name': _name,
-          'category': _category,
-          'price': _price,
-          'quantity': _quantity,
-          'description': _description,
-          'image_url': _imageUrl,
-        });
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Item added successfully!')),
-        );
-
-        // Clear the form
-        _formKey.currentState!.reset();
-        setState(() {
-          _image = null;
-          _imageUrl = null;
-        });
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error adding item: $e')),
-        );
-        print('Error adding item: $e');
+      List<String> imageUrls = [];
+      for (File image in _images) {
+        String? imageUrl = await StorageService().uploadImage(image);
+        if (imageUrl != null) {
+          imageUrls.add(imageUrl);
+        }
       }
+
+      var productId = await DatabaseService().addProduct({
+        'name': _name,
+        'category': _category,
+        'price': _price,
+        'quantity': _quantity,
+        'description': _description,
+        'imageUrls': imageUrls,
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Product added successfully!')));
+      _formKey.currentState!.reset();
+      setState(() {
+        _images = [];
+      });
+
+      print('Navigating to UserDetailsFormScreen with productId: $productId');
+      Navigator.pushNamed(context, UserDetailsFormScreen.id, arguments: productId);
+    } else {
+      print('Form validation failed');
     }
   }
 
@@ -94,7 +71,7 @@ class _ElectronicsItemFormState extends State<ElectronicsItemForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Electronics Item'),
+        title: Text('Add Product'),
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
@@ -181,17 +158,28 @@ class _ElectronicsItemFormState extends State<ElectronicsItemForm> {
                   },
                 ),
                 SizedBox(height: 20),
-                _image == null
-                    ? Text('No image selected.')
-                    : Image.file(_image!, height: 200),
+                _images.isNotEmpty
+                    ? Wrap(
+                        spacing: 8.0,
+                        runSpacing: 4.0,
+                        children: _images.map((image) {
+                          return Image.file(
+                            image,
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.cover,
+                          );
+                        }).toList(),
+                      )
+                    : Text('No images selected'),
                 ElevatedButton(
-                  onPressed: _pickImage,
-                  child: Text('Select Image'),
+                  onPressed: _pickImages,
+                  child: Text('Pick Images'),
                 ),
                 SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _submitForm,
-                  child: Text('Add Item'),
+                  child: Text('Add Product'),
                 ),
               ],
             ),

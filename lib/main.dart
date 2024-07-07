@@ -9,6 +9,7 @@ import 'package:electronicsrent/Screens/main_screen.dart';
 import 'package:electronicsrent/Screens/price_dialog.dart';
 import 'package:electronicsrent/Screens/seller_category/seller_category.dart';
 import 'package:electronicsrent/Screens/splash.dart';
+import 'package:electronicsrent/Screens/user_details_form_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 //import 'package:location/location.dart';
@@ -40,7 +41,8 @@ class MyApp extends StatelessWidget {
         MainScreen.id: (context) => MainScreen(),
         SellerCategoryScreen.id: (context) => SellerCategoryScreen(),
         PriceDialog.id: (context) => PriceDialog(),
-        ElectronicsItemForm.id: (context) => ElectronicsItemForm(),
+        ProductFormScreen.id: (context) => ProductFormScreen(),
+        UserDetailsFormScreen.id:(context)=>UserDetailsFormScreen(productId: '',),
       },
     );
   }
