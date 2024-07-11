@@ -14,11 +14,11 @@ class Product {
   });
 
   factory Product.fromFirestore(DocumentSnapshot doc) {
-    Map data = doc.data() as Map<String, dynamic>;
+    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     return Product(
       id: doc.id,
       name: data['name'] ?? '',
-      imageUrl: data['imageUrls'][0] ?? '',
+      imageUrl: data['imageUrls'] != null && data['imageUrls'].isNotEmpty ? data['imageUrls'][0] : '',
       price: data['price']?.toDouble() ?? 0.0,
     );
   }

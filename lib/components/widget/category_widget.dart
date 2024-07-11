@@ -11,15 +11,16 @@ class CategoryWidget extends StatelessWidget {
     FirebaseServices _service = FirebaseServices();
 
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(5.0),
       child: Container(
         child: FutureBuilder<QuerySnapshot>(
-          future: _service.categories.orderBy('catName', descending: false).get(),
+          future:
+              _service.categories.orderBy('catName', descending: false).get(),
           builder:
               (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (snapshot.hasError) {
               return Container(
-                height: 200,
+                height: 100,
                 child: Column(
                   children: [
                     Row(
@@ -41,7 +42,7 @@ class CategoryWidget extends StatelessWidget {
               );
             }
             return Container(
-              height: 200, // Adjusted height
+              height: 150, // Adjusted height
               child: Column(
                 children: [
                   Row(

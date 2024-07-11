@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
-
-
 class ProductFormScreen extends StatefulWidget {
   static const String id = 'product_form_screen';
 
@@ -22,7 +20,6 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
   int _quantity = 0;
   String _description = '';
   List<File> _images = [];
-
   final List<String> _categories = ['Laptop', 'Smartphone', 'Tablet', 'Accessory'];
 
   Future<void> _pickImages() async {
@@ -45,7 +42,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
         }
       }
 
-      final productId = await DatabaseService().addProduct({
+      String productId = await DatabaseService().addProduct({
         'name': _name,
         'category': _category,
         'price': _price,
@@ -54,15 +51,15 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
         'imageUrls': imageUrls,
       });
 
-      if (productId != null) {
-        Navigator.pushNamed(context, UserDetailsScreen.id, arguments: {
+      Navigator.pushNamed(
+        context,
+        UserDetailsScreen.id,
+        arguments: {
           'productId': productId,
           'productName': _name,
           'productImageUrl': imageUrls.isNotEmpty ? imageUrls[0] : null,
-        });
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error adding product')));
-      }
+        },
+      );
     }
   }
 
@@ -118,9 +115,6 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                     if (value == null || value.isEmpty) {
                       return 'Please enter a price';
                     }
-                    if (double.tryParse(value) == null) {
-                      return 'Please enter a valid number';
-                    }
                     return null;
                   },
                   onSaved: (value) {
@@ -134,9 +128,6 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                     if (value == null || value.isEmpty) {
                       return 'Please enter a quantity';
                     }
-                    if (int.tryParse(value) == null) {
-                      return 'Please enter a valid number';
-                    }
                     return null;
                   },
                   onSaved: (value) {
@@ -145,7 +136,6 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                 ),
                 TextFormField(
                   decoration: InputDecoration(labelText: 'Description'),
-                  maxLines: 3,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter a description';
@@ -157,10 +147,16 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                   },
                 ),
                 SizedBox(height: 20),
-                _images.isNotEmpty
-                    ? Wrap(
-                        spacing: 8.0,
-                        runSpacing: 4.0,
+                ElevatedButton(
+                  onPressed: _pickImages,
+                  child: Text('Pick Images'),
+                ),
+                SizedBox(height: 20),
+                _images.isEmpty
+                    ? Text('No images selected')
+                    : Wrap(
+                        spacing: 10,
+                        runSpacing: 10,
                         children: _images.map((image) {
                           return Image.file(
                             image,
@@ -169,16 +165,11 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                             fit: BoxFit.cover,
                           );
                         }).toList(),
-                      )
-                    : Text('No images selected'),
-                ElevatedButton(
-                  onPressed: _pickImages,
-                  child: Text('Pick Images'),
-                ),
+                      ),
                 SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _submitForm,
-                  child: Text('Add Product'),
+                  child: Text('Submit'),
                 ),
               ],
             ),

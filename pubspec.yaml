@@ -81,6 +81,7 @@ flutter:
     - assets/images/images.png
     - assets/images/location.jpg
     - assets/images/logo.png
+    - assets/images/sony.jpg
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
