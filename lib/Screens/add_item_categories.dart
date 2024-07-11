@@ -20,7 +20,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
   int _quantity = 0;
   String _description = '';
   List<File> _images = [];
-  final List<String> _categories = ['Laptop', 'Smartphone', 'Tablet', 'Accessory'];
+  final List<String> _categories = ['Laptop', 'Smartphone', 'Cooler', 'Camera','Home Appliances'];
 
   Future<void> _pickImages() async {
     final pickedFiles = await ImagePicker().pickMultiImage();
