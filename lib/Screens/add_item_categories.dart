@@ -1,11 +1,11 @@
 import 'package:electronicsrent/Screens/services/database_service.dart';
 import 'package:electronicsrent/Screens/services/storage_service.dart';
+import 'package:electronicsrent/Screens/user_details_form_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 
-import 'user_details_form_screen.dart';
 
 class ProductFormScreen extends StatefulWidget {
   static const String id = 'product_form_screen';
@@ -45,7 +45,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
         }
       }
 
-      var productId = await DatabaseService().addProduct({
+      final productId = await DatabaseService().addProduct({
         'name': _name,
         'category': _category,
         'price': _price,
@@ -54,16 +54,15 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
         'imageUrls': imageUrls,
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Product added successfully!')));
-      _formKey.currentState!.reset();
-      setState(() {
-        _images = [];
-      });
-
-      print('Navigating to UserDetailsFormScreen with productId: $productId');
-      Navigator.pushNamed(context, UserDetailsFormScreen.id, arguments: productId);
-    } else {
-      print('Form validation failed');
+      if (productId != null) {
+        Navigator.pushNamed(context, UserDetailsScreen.id, arguments: {
+          'productId': productId,
+          'productName': _name,
+          'productImageUrl': imageUrls.isNotEmpty ? imageUrls[0] : null,
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error adding product')));
+      }
     }
   }
 

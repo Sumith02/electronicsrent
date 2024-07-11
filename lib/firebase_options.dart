@@ -63,6 +63,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '930853569454',
     projectId: 'electronicsrent-aa920',
     storageBucket: 'electronicsrent-aa920.appspot.com',
+    androidClientId: '930853569454-ageqtg0ek7k0eromhlojtov2tdcd7c6b.apps.googleusercontent.com',
+    iosClientId: '930853569454-qvvshrlv03kqg3c82a4pab4m0tia2pj9.apps.googleusercontent.com',
     iosBundleId: 'com.example.electronicsrent',
   );
 

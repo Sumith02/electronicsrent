@@ -12,7 +12,12 @@
           "package_name": "com.electronicsrent.com"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "930853569454-v50q8u85hm52fpaggo1pvbsblb82ttl2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyD7M56TjLPlsU1z2hcoGpi3awJ3Nz2TsDs"
@@ -20,7 +25,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "930853569454-v50q8u85hm52fpaggo1pvbsblb82ttl2.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "930853569454-qvvshrlv03kqg3c82a4pab4m0tia2pj9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.electronicsrent"
+              }
+            }
+          ]
         }
       }
     },
@@ -31,7 +48,20 @@
           "package_name": "com.example.electronicsrent"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "930853569454-ageqtg0ek7k0eromhlojtov2tdcd7c6b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.electronicsrent",
+            "certificate_hash": "19c1a3acb09ad31267e2196d19f19924c9339cc2"
+          }
+        },
+        {
+          "client_id": "930853569454-v50q8u85hm52fpaggo1pvbsblb82ttl2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyD7M56TjLPlsU1z2hcoGpi3awJ3Nz2TsDs"
@@ -39,7 +69,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "930853569454-v50q8u85hm52fpaggo1pvbsblb82ttl2.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "930853569454-qvvshrlv03kqg3c82a4pab4m0tia2pj9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.electronicsrent"
+              }
+            }
+          ]
         }
       }
     }

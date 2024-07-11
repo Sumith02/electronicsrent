@@ -20,6 +20,7 @@ void main() async {
   runApp(const MyApp());
 }
 
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -42,7 +43,7 @@ class MyApp extends StatelessWidget {
         SellerCategoryScreen.id: (context) => SellerCategoryScreen(),
         PriceDialog.id: (context) => PriceDialog(),
         ProductFormScreen.id: (context) => ProductFormScreen(),
-        UserDetailsFormScreen.id:(context)=>UserDetailsFormScreen(productId: '',),
+        UserDetailsScreen.id:(context)=>UserDetailsScreen(),
       },
     );
   }

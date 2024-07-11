@@ -1,73 +1,73 @@
-import 'package:electronicsrent/Screens/services/database_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:electronicsrent/Screens/main_screen.dart';
 import 'package:flutter/material.dart';
-//import '../services/database_service.dart';
 
-class UserDetailsFormScreen extends StatefulWidget {
-  final String productId;
-  UserDetailsFormScreen({required this.productId});
-
-  static const String id = 'user_details_form_screen';
+class UserDetailsScreen extends StatefulWidget {
+  static const String id = 'user_details_screen';
 
   @override
-  _UserDetailsFormScreenState createState() => _UserDetailsFormScreenState();
+  _UserDetailsScreenState createState() => _UserDetailsScreenState();
 }
 
-class _UserDetailsFormScreenState extends State<UserDetailsFormScreen> {
+class _UserDetailsScreenState extends State<UserDetailsScreen> {
   final _formKey = GlobalKey<FormState>();
   String _name = '';
-  String _email = '';
-  String _phone = '';
+  String _contact = '';
 
-  Future<void> _submitUserDetails() async {
+  Future<void> _submitForm(
+      String productId, String productName, String? productImageUrl) async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      await DatabaseService().addUserDetails({
+      await FirebaseFirestore.instance.collection('users').add({
         'name': _name,
-        'email': _email,
-        'phone': _phone,
-        'productId': widget.productId,
+        'contact': _contact,
       });
 
-      // Show confirmation dialog with product details
       showDialog(
         context: context,
-        builder: (context) {
-          return FutureBuilder(
-            future: DatabaseService().getProduct(widget.productId),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
-              }
-              if (!snapshot.hasData) {
-                return Center(child: Text('Error fetching product details.'));
-              }
-              var product = snapshot.data;
-              return AlertDialog(
-                title: Text('Confirm Product Submission'),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Image.network(product?['imageUrls'][0]),
-                    Text('Product Name: ${product?['name']}'),
-                  ],
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text('Cancel'),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Product submitted successfully!')));
-                    },
-                    child: Text('Confirm'),
-                  ),
-                ],
-              );
-            },
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Confirm Product Details'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                productImageUrl != null
+                    ? Container(
+                        width: 100.0, // Set the desired width
+                        height: 100.0, // Set the desired height
+                        child: Image.network(
+                          productImageUrl,
+                          width: 150.0,
+                          height: 150.0,
+                          fit: BoxFit
+                              .cover, // Ensures the image covers the container while maintaining aspect ratio
+                        ),
+                      )
+                    : Container(),
+                SizedBox(height: 10),
+                Text(productName),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+                child: Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text('Product confirmed!'),
+                  ));
+                  Navigator.of(context).pop(); // Close the UserDetailsScreen
+                  Navigator.of(context).pushReplacementNamed(
+                      MainScreen.id); // Navigate to the home page
+                },
+                child: Text('Confirm'),
+              ),
+            ],
           );
         },
       );
@@ -76,9 +76,16 @@ class _UserDetailsFormScreenState extends State<UserDetailsFormScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final Map<String, dynamic> args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+
+    String productId = args['productId'] as String;
+    String productName = args['productName'] as String;
+    String? productImageUrl = args['productImageUrl'] as String?;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Enter Your Details'),
+        title: Text('User Details'),
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
@@ -99,32 +106,22 @@ class _UserDetailsFormScreenState extends State<UserDetailsFormScreen> {
                 },
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Email'),
+                decoration: InputDecoration(labelText: 'Contact'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
+                    return 'Please enter your contact information';
                   }
                   return null;
                 },
                 onSaved: (value) {
-                  _email = value!;
-                },
-              ),
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Phone'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your phone number';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  _phone = value!;
+                  _contact = value!;
                 },
               ),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: _submitUserDetails,
+                onPressed: () {
+                  _submitForm(productId, productName, productImageUrl);
+                },
                 child: Text('Submit'),
               ),
             ],
