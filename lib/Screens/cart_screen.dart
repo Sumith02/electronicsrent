@@ -1,9 +1,7 @@
-// screens/cart_screen.dart
-import 'package:electronicsrent/Screens/models/cart_item.dart';
-import 'package:electronicsrent/Screens/services/cart_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import 'package:electronicsrent/Screens/models/cart_item.dart';
+import 'package:electronicsrent/Screens/services/cart_service.dart';
 
 class CartScreen extends StatelessWidget {
   static const String id = 'cart-screen';
@@ -23,13 +21,22 @@ class CartScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 CartItem cartItem = cartService.items[index];
                 return ListTile(
-                  leading: Image.network(cartItem.product.imageUrl),
+                  leading: Image.network(cartItem.product.imageUrls.isNotEmpty ? cartItem.product.imageUrls[0] : ''), // Display the first image URL if available
                   title: Text(cartItem.product.name),
-                  subtitle: Text('Quantity: ${cartItem.quantity}'),
-                  trailing: Text('\$${(cartItem.product.price * cartItem.quantity).toStringAsFixed(2)}'),
-                  onLongPress: () {
-                    cartService.removeItem(cartItem);
-                  },
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Quantity: ${cartItem.quantity}'),
+                      Text('Per Day Price: \$${cartItem.product.price.toStringAsFixed(2)}'), // Assuming this is the price per day
+                      Text('Total: \$${(cartItem.product.price * cartItem.quantity).toStringAsFixed(2)}'), // Total price for the quantity
+                    ],
+                  ),
+                  trailing: IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () {
+                      cartService.removeItem(cartItem);
+                    },
+                  ),
                 );
               },
             ),

@@ -1,11 +1,10 @@
 import 'package:chat_gpt_sdk/chat_gpt_sdk.dart';
-
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:electronicsrent/services/consts.dart';
 import 'package:flutter/material.dart';
 
 class ChatPage extends StatefulWidget {
-    static const String id = 'chat-page';
+  static const String id = 'chat-page';
   const ChatPage({super.key});
 
   @override
@@ -14,11 +13,12 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   final _openAI = OpenAI.instance.build(
-      token: OPENAI_API_KEY,
-      baseOption: HttpSetup(
-        receiveTimeout: const Duration(seconds: 5),
-      ),
-      enableLog: true);
+    token: OPENAI_API_KEY,
+    baseOption: HttpSetup(
+      receiveTimeout: const Duration(seconds: 5),
+    ),
+    enableLog: true,
+  );
 
   final ChatUser _user = ChatUser(
     id: '1',
@@ -38,13 +38,6 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     super.initState();
-    /*_messages.add(
-      ChatMessage(
-        text: 'Hey!',
-        user: _user,
-        createdAt: DateTime.now(),
-      ),
-    );*/
   }
 
   @override
@@ -90,6 +83,7 @@ class _ChatPageState extends State<ChatPage> {
       _messages.insert(0, m);
       _typingUsers.add(_gptChatUser);
     });
+
     List<Map<String, dynamic>> messagesHistory =
         _messages.reversed.toList().map((m) {
       if (m.user == _user) {
@@ -98,24 +92,30 @@ class _ChatPageState extends State<ChatPage> {
         return Messages(role: Role.assistant, content: m.text).toJson();
       }
     }).toList();
+
     final request = ChatCompleteText(
       messages: messagesHistory,
       maxToken: 200,
-      model: GptTurbo0301ChatModel(),
+      model: Gpt40314ChatModel(), // Correct model name as a string
     );
+
     final response = await _openAI.onChatCompletion(request: request);
-    for (var element in response!.choices) {
-      if (element.message != null) {
-        setState(() {
-          _messages.insert(
-              0,
-              ChatMessage(
-                  user: _gptChatUser,
-                  createdAt: DateTime.now(),
-                  text: element.message!.content));
-        });
+
+    if (response != null) {
+      for (var element in response.choices) {
+        if (element.message != null) {
+          setState(() {
+            _messages.insert(
+                0,
+                ChatMessage(
+                    user: _gptChatUser,
+                    createdAt: DateTime.now(),
+                    text: element.message!.content));
+          });
+        }
       }
     }
+
     setState(() {
       _typingUsers.remove(_gptChatUser);
     });
