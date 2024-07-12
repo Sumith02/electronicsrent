@@ -54,6 +54,8 @@ dependencies:
   firebase_storage: ^12.1.0
   firebase_app_check: ^0.3.0+2
   provider: ^6.1.2
+  dash_chat_2: ^0.0.21
+  chat_gpt_sdk: ^3.0.9
 
 dev_dependencies:
   flutter_test:

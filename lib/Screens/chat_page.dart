@@ -1,96 +1,123 @@
-import 'package:electronicsrent/Screens/services/ai_chat_service.dart';
+import 'package:chat_gpt_sdk/chat_gpt_sdk.dart';
+
+import 'package:dash_chat_2/dash_chat_2.dart';
+import 'package:electronicsrent/services/consts.dart';
 import 'package:flutter/material.dart';
 
-
 class ChatPage extends StatefulWidget {
-  static const String id = 'chat-page';
+    static const String id = 'chat-page';
+  const ChatPage({super.key});
 
   @override
-  _ChatPageState createState() => _ChatPageState();
+  State<ChatPage> createState() => _ChatPageState();
 }
 
 class _ChatPageState extends State<ChatPage> {
-  final TextEditingController _controller = TextEditingController();
-  final AIChatService _aiChatService = AIChatService(); // Correct instantiation
-
-  List<Map<String, String>> _messages = [];
-
-  void _sendMessage(String message) async {
-    setState(() {
-      _messages.add({'user': message});
-    });
-
-    try {
-      String aiResponse = await _aiChatService.getAIResponse(message);
-      setState(() {
-        _messages.add({'ai': aiResponse});
-      });
-    } catch (e) {
-      print('Error fetching AI response: $e');
-      // Handle error, show message, etc.
-    }
-  }
-
-  Widget _buildMessageItem(Map<String, String> message) {
-    bool isUser = message.keys.first == 'user';
-    return Container(
-      alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
-      child: Card(
-        color: isUser ? Colors.blueAccent : Colors.grey[300],
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            message.values.first,
-            style: TextStyle(color: isUser ? Colors.white : Colors.black),
-          ),
-        ),
+  final _openAI = OpenAI.instance.build(
+      token: OPENAI_API_KEY,
+      baseOption: HttpSetup(
+        receiveTimeout: const Duration(seconds: 5),
       ),
-    );
+      enableLog: true);
+
+  final ChatUser _user = ChatUser(
+    id: '1',
+    firstName: 'Charles',
+    lastName: 'Leclerc',
+  );
+
+  final ChatUser _gptChatUser = ChatUser(
+    id: '2',
+    firstName: 'Chat',
+    lastName: 'GPT',
+  );
+
+  List<ChatMessage> _messages = <ChatMessage>[];
+  List<ChatUser> _typingUsers = <ChatUser>[];
+
+  @override
+  void initState() {
+    super.initState();
+    /*_messages.add(
+      ChatMessage(
+        text: 'Hey!',
+        user: _user,
+        createdAt: DateTime.now(),
+      ),
+    );*/
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('AI Chat'),
+        backgroundColor: const Color.fromRGBO(
+          0,
+          166,
+          126,
+          1,
+        ),
+        title: const Text(
+          'GPT Chat',
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: _messages.length,
-              itemBuilder: (context, index) {
-                return _buildMessageItem(_messages[index]);
-              },
-            ),
+      body: DashChat(
+        currentUser: _user,
+        messageOptions: const MessageOptions(
+          currentUserContainerColor: Colors.black,
+          containerColor: Color.fromRGBO(
+            0,
+            166,
+            126,
+            1,
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _controller,
-                    decoration: InputDecoration(
-                      labelText: 'Enter message',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.send),
-                  onPressed: () {
-                    _sendMessage(_controller.text);
-                    _controller.clear();
-                  },
-                ),
-              ],
-            ),
-          ),
-        ],
+          textColor: Colors.white,
+        ),
+        onSend: (ChatMessage m) {
+          getChatResponse(m);
+        },
+        messages: _messages,
+        typingUsers: _typingUsers,
       ),
     );
+  }
+
+  Future<void> getChatResponse(ChatMessage m) async {
+    setState(() {
+      _messages.insert(0, m);
+      _typingUsers.add(_gptChatUser);
+    });
+    List<Map<String, dynamic>> messagesHistory =
+        _messages.reversed.toList().map((m) {
+      if (m.user == _user) {
+        return Messages(role: Role.user, content: m.text).toJson();
+      } else {
+        return Messages(role: Role.assistant, content: m.text).toJson();
+      }
+    }).toList();
+    final request = ChatCompleteText(
+      messages: messagesHistory,
+      maxToken: 200,
+      model: GptTurbo0301ChatModel(),
+    );
+    final response = await _openAI.onChatCompletion(request: request);
+    for (var element in response!.choices) {
+      if (element.message != null) {
+        setState(() {
+          _messages.insert(
+              0,
+              ChatMessage(
+                  user: _gptChatUser,
+                  createdAt: DateTime.now(),
+                  text: element.message!.content));
+        });
+      }
+    }
+    setState(() {
+      _typingUsers.remove(_gptChatUser);
+    });
   }
 }
