@@ -9,12 +9,15 @@ import 'package:electronicsrent/Screens/item_detail_screen.dart';
 import 'package:electronicsrent/Screens/location_screen.dart';
 import 'package:electronicsrent/Screens/login_register/login_screen.dart';
 import 'package:electronicsrent/Screens/main_screen.dart';
+import 'package:electronicsrent/Screens/models/cart_item.dart';
 import 'package:electronicsrent/Screens/models/product.dart';
+import 'package:electronicsrent/Screens/payment_screen.dart';
 import 'package:electronicsrent/Screens/price_dialog.dart';
 import 'package:electronicsrent/Screens/seller_category/seller_category.dart';
 import 'package:electronicsrent/Screens/services/cart_service.dart';
 import 'package:electronicsrent/Screens/splash.dart';
 import 'package:electronicsrent/Screens/user_details_form_screen.dart';
+import 'package:electronicsrent/Screens/services/database_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -33,11 +36,11 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => CartService()),
+        Provider(create: (_) => DatabaseService()), // Provide DatabaseService
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        theme:
-            ThemeData(primaryColor: Colors.cyan.shade900, fontFamily: 'Lato'),
+        theme: ThemeData(primaryColor: Colors.cyan.shade900, fontFamily: 'Lato'),
         initialRoute: SplashScreen.id,
         onGenerateRoute: (settings) {
           if (settings.name == ItemDetailScreen.id) {
@@ -47,8 +50,17 @@ class MyApp extends StatelessWidget {
                 return ItemDetailScreen(product: product);
               },
             );
+          } else if (settings.name == PaymentScreen.id) {
+            final args = settings.arguments as Map<String, dynamic>;
+            final amount = args['amount'] as double;
+            final cartItem = args['cartItem'] as CartItem;
+            return MaterialPageRoute(
+              builder: (context) {
+                return PaymentScreen(amount: amount, cartItem: cartItem);
+              },
+            );
           }
-          return null; // Return null to use other routes defined in the `routes` map
+          return null;
         },
         routes: {
           SplashScreen.id: (context) => SplashScreen(),

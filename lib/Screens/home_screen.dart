@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 
-
 import '../components/widget/banner_widget.dart';
 import '../components/widget/category_widget.dart';
 import 'login_register/login_screen.dart';
@@ -22,6 +21,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final DatabaseService _dbService = DatabaseService();
   List<Product> _products = [];
+  List<Product> _filteredProducts = [];
 
   @override
   void initState() {
@@ -33,6 +33,15 @@ class _HomeScreenState extends State<HomeScreen> {
     List<Product> products = await _dbService.getProducts();
     setState(() {
       _products = products;
+      _filteredProducts = products;
+    });
+  }
+
+  void _filterProducts(String query) {
+    setState(() {
+      _filteredProducts = _products
+          .where((product) => product.name.toLowerCase().contains(query.toLowerCase()))
+          .toList();
     });
   }
 
@@ -44,7 +53,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final locationService = LocationService();
-    final locationData = locationService.locationData;
     final address = locationService.address;
     final cartService = Provider.of<CartService>(context);
 
@@ -72,6 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: SizedBox(
                       height: 50,
                       child: TextField(
+                        onChanged: _filterProducts,
                         decoration: InputDecoration(
                           prefixIcon: Icon(Icons.search),
                           labelText: 'Find your item',
@@ -99,75 +108,74 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     SlidingBannerWidget(),
                     CategoryWidget(),
-                    if (_products.isEmpty)
+                    if (_filteredProducts.isEmpty)
                       Center(child: CircularProgressIndicator())
                     else
                       GridView.builder(
-  shrinkWrap: true,
-  physics: NeverScrollableScrollPhysics(),
-  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-    crossAxisCount: 2,
-    childAspectRatio: 3 / 4,
-    mainAxisSpacing: 8,
-    crossAxisSpacing: 8,
-  ),
-  itemCount: _products.length,
-  itemBuilder: (context, index) {
-    Product product = _products[index];
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ItemDetailScreen(product: product),
-          ),
-        );
-      },
-      child: Card(
-        child: Column(
-          children: [
-            Expanded(
-              child: Image.network(
-                product.imageUrls.isNotEmpty ? product.imageUrls[0] : '', // Displaying the first image, you can iterate over imageUrls for multiple images
-                fit: BoxFit.cover,
-                width: double.infinity,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    product.name,
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    '\₹${product.price.toStringAsFixed(2)}',
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                  SizedBox(height: 4),
-                  ElevatedButton(
-                    onPressed: () {
-                      cartService.addItem(product, 1); // Example to add item with 1 day
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('${product.name} added to cart'),
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 3 / 4,
+                          mainAxisSpacing: 8,
+                          crossAxisSpacing: 8,
                         ),
-                      );
-                    },
-                    child: Text('Add to Cart'),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  },
-),
-
+                        itemCount: _filteredProducts.length,
+                        itemBuilder: (context, index) {
+                          Product product = _filteredProducts[index];
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ItemDetailScreen(product: product),
+                                ),
+                              );
+                            },
+                            child: Card(
+                              child: Column(
+                                children: [
+                                  Expanded(
+                                    child: Image.network(
+                                      product.imageUrls.isNotEmpty ? product.imageUrls[0] : '', 
+                                      fit: BoxFit.cover,
+                                      width: double.infinity,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          product.name,
+                                          style: TextStyle(fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          '\₹${product.price.toStringAsFixed(2)}',
+                                          style: TextStyle(color: Colors.grey),
+                                        ),
+                                        SizedBox(height: 4),
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            cartService.addItem(product, 1);
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(
+                                                content: Text('${product.name} added to cart'),
+                                              ),
+                                            );
+                                          },
+                                          child: Text('Add to Cart'),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                   ],
                 ),
               ),

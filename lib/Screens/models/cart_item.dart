@@ -2,7 +2,7 @@ import 'package:electronicsrent/Screens/models/product.dart';
 
 class CartItem {
   final Product product;
-  int quantity;
+    int quantity;
   int days; // Added field for rental days
 
   CartItem({

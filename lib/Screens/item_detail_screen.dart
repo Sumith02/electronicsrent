@@ -1,4 +1,6 @@
+import 'package:electronicsrent/Screens/models/cart_item.dart';
 import 'package:electronicsrent/Screens/models/product.dart';
+import 'package:electronicsrent/Screens/payment_screen.dart';
 import 'package:electronicsrent/Screens/services/cart_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -67,7 +69,9 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                   SizedBox(height: 8),
                   Text('Seller Address: ${widget.product.sellerAddress}'),
                   SizedBox(height: 8),
-                  Text('Per Day Cost: ₹${widget.product.price.toStringAsFixed(2)}'),
+                  Text(
+                    'Per Day Cost: ₹${widget.product.price.toStringAsFixed(2)}',
+                  ),
                   SizedBox(height: 16),
                   Text('Select Number of Days:'),
                   SizedBox(height: 8),
@@ -91,16 +95,34 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                   SizedBox(height: 16),
                   Text('Total Cost: ₹${_totalCost.toStringAsFixed(2)}'),
                   SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      cartService.addItem(widget.product, _days);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('${widget.product.name} booked for $_days days'),
-                        ),
-                      );
-                    },
-                    child: Text('Book Now'),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 50, right: 50, top: 40),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // Create a CartItem instance and navigate to PaymentScreen
+                        CartItem cartItem = CartItem(
+                          product: widget.product,
+                          quantity: 1, // Assuming 1 item for rental
+                          days: _days,
+                        );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PaymentScreen(
+                              amount: _totalCost,
+                              cartItem: cartItem,
+                            ),
+                          ),
+                        );
+                        cartService.addItem(widget.product, _days);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('${widget.product.name} booked for $_days days'),
+                          ),
+                        );
+                      },
+                      child: Center(child: Text('Book Now')),
+                    ),
                   ),
                 ],
               ),

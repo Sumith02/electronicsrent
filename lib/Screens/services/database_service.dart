@@ -22,4 +22,8 @@ class DatabaseService {
     DocumentSnapshot doc = await _db.collection('electronics_items').doc(productId).get();
     return doc.data() as Map<String, dynamic>;
   }
+
+  Future<void> removeProduct(Product product) async {
+    await _db.collection('electronics_items').doc(product.id).delete();
+  }
 }
