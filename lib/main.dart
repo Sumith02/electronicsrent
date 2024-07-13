@@ -7,7 +7,7 @@ import 'package:electronicsrent/Screens/chat_page.dart';
 import 'package:electronicsrent/Screens/home_screen.dart';
 import 'package:electronicsrent/Screens/item_detail_screen.dart';
 import 'package:electronicsrent/Screens/location_screen.dart';
-import 'package:electronicsrent/Screens/login_screen.dart';
+import 'package:electronicsrent/Screens/login_register/login_screen.dart';
 import 'package:electronicsrent/Screens/main_screen.dart';
 import 'package:electronicsrent/Screens/models/product.dart';
 import 'package:electronicsrent/Screens/price_dialog.dart';

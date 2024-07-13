@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 
 import '../components/widget/banner_widget.dart';
 import '../components/widget/category_widget.dart';
-import 'login_screen.dart';
+import 'login_register/login_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String id = 'home-screen';

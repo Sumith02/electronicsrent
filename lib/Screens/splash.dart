@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:electronicsrent/Screens/login_screen.dart';
+import 'package:electronicsrent/Screens/login_register/login_screen.dart';
 import 'package:electronicsrent/Screens/location_screen.dart';
 import 'package:electronicsrent/Screens/services/location_services.dart';
 //import 'package:electronicsrent/Services/location_service.dart';

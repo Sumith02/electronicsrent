@@ -1,5 +1,5 @@
-import 'package:electronicsrent/Screens/Register_page.dart';
-import 'package:electronicsrent/Screens/login_page.dart';
+import 'package:electronicsrent/Screens/login_register/Register_page.dart';
+import 'package:electronicsrent/Screens/login_register/login_page.dart';
 import 'package:flutter/material.dart';
 
 

@@ -1,4 +1,4 @@
-import 'package:electronicsrent/Screens/forgot_pass.dart';
+import 'package:electronicsrent/Screens/login_register/forgot_pass.dart';
 
 import 'package:electronicsrent/components/helper_function.dart';
 import 'package:electronicsrent/components/my_button.dart';
