@@ -58,7 +58,7 @@ class _MainScreen extends State<MainScreen> {
                 ),
               ),
               Icon(
-                Icons.favorite_outline_rounded,
+                Icons.shopping_cart,
                 color: Colors.black,
               ),
               Icon(

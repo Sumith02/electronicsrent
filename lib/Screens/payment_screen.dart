@@ -1,9 +1,10 @@
+import 'package:electronicsrent/Screens/main_screen.dart';
 import 'package:electronicsrent/Screens/models/cart_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:electronicsrent/Screens/services/database_service.dart';
-import 'package:electronicsrent/Screens/home_screen.dart';
+
 
 class PaymentScreen extends StatelessWidget {
   static const String id = 'payment-screen';
@@ -40,6 +41,8 @@ class PaymentScreen extends StatelessWidget {
                 // Remove the item from the database
                 await dbService.removeProduct(cartItem.product);
 
+                //  cartService.removeItem(cartItem);
+
                 // Show confirmation dialog
                 showDialog(
                   context: context,
@@ -50,7 +53,7 @@ class PaymentScreen extends StatelessWidget {
                       actions: [
                         TextButton(
                           onPressed: () {
-                            Navigator.of(context).pushNamedAndRemoveUntil(HomeScreen.id, (route) => false);
+                            Navigator.of(context).pushNamedAndRemoveUntil(MainScreen.id, (route) => false);
                           },
                           child: Text('OK'),
                         ),
