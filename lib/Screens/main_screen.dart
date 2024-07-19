@@ -1,4 +1,5 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:electronicsrent/Screens/ProfileScreen.dart';
 import 'package:electronicsrent/Screens/add_item_categories.dart';
 import 'package:electronicsrent/Screens/cart_screen.dart';
 import 'package:electronicsrent/Screens/chat_page.dart';
@@ -34,6 +35,7 @@ class _MainScreen extends State<MainScreen> {
               ChatPage(),
               ProductFormScreen(),
               CartScreen(),
+              ProfileScreen(),
             ],
           ),
           bottomNavigationBar: CurvedNavigationBar(

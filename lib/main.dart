@@ -1,3 +1,4 @@
+import 'package:electronicsrent/Screens/ProfileScreen.dart';
 import 'package:electronicsrent/Screens/add_item_categories.dart';
 import 'package:electronicsrent/Screens/authentication_screen/auth.dart';
 import 'package:electronicsrent/Screens/authentication_screen/phone_auth.dart';
@@ -77,6 +78,7 @@ class MyApp extends StatelessWidget {
           UserDetailsScreen.id: (context) => UserDetailsScreen(),
           CartScreen.id: (context) => CartScreen(),
           ChatPage.id: (context) => ChatPage(),
+          ProfileScreen.id: (context) => ProfileScreen(),
         },
       ),
     );
