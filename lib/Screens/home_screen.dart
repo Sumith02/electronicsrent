@@ -8,7 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 
 import '../components/widget/banner_widget.dart';
-import '../components/widget/category_widget.dart';
+// import '../components/widget/category_widget.dart';
 import 'login_register/login_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -107,7 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   children: [
                     SlidingBannerWidget(),
-                    CategoryWidget(),
+                    // CategoryWidget(),
                     if (_filteredProducts.isEmpty)
                       Center(child: CircularProgressIndicator())
                     else

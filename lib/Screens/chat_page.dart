@@ -1,123 +1,128 @@
-import 'package:chat_gpt_sdk/chat_gpt_sdk.dart';
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:dash_chat_2/dash_chat_2.dart';
-import 'package:electronicsrent/services/consts.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gemini/flutter_gemini.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ChatPage extends StatefulWidget {
-  static const String id = 'chat-page';
+   static const String id = 'chat_page';
   const ChatPage({super.key});
 
   @override
-  State<ChatPage> createState() => _ChatPageState();
+  State<ChatPage> createState() => _ChatPage();
 }
 
-class _ChatPageState extends State<ChatPage> {
-  final _openAI = OpenAI.instance.build(
-    token: OPENAI_API_KEY,
-    baseOption: HttpSetup(
-      receiveTimeout: const Duration(seconds: 5),
-    ),
-    enableLog: true,
+class _ChatPage extends State<ChatPage> {
+  final Gemini gemini = Gemini.instance;
+
+  List<ChatMessage> messages = [];
+
+  ChatUser currentUser = ChatUser(id: "0", firstName: "User");
+  ChatUser geminiUser = ChatUser(
+    id: "1",
+    firstName: "Gemini",
+    profileImage:
+        "https://seeklogo.com/images/G/google-gemini-logo-A5787B2669-seeklogo.com.png",
   );
-
-  final ChatUser _user = ChatUser(
-    id: '1',
-    firstName: 'Charles',
-    lastName: 'Leclerc',
-  );
-
-  final ChatUser _gptChatUser = ChatUser(
-    id: '2',
-    firstName: 'Chat',
-    lastName: 'GPT',
-  );
-
-  List<ChatMessage> _messages = <ChatMessage>[];
-  List<ChatUser> _typingUsers = <ChatUser>[];
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(
-          0,
-          166,
-          126,
-          1,
-        ),
+        centerTitle: true,
         title: const Text(
-          'GPT Chat',
-          style: TextStyle(
-            color: Colors.white,
-          ),
+          " Chat Box ",
         ),
       ),
-      body: DashChat(
-        currentUser: _user,
-        messageOptions: const MessageOptions(
-          currentUserContainerColor: Colors.black,
-          containerColor: Color.fromRGBO(
-            0,
-            166,
-            126,
-            1,
-          ),
-          textColor: Colors.white,
-        ),
-        onSend: (ChatMessage m) {
-          getChatResponse(m);
-        },
-        messages: _messages,
-        typingUsers: _typingUsers,
-      ),
+      body: _buildUI(),
     );
   }
 
-  Future<void> getChatResponse(ChatMessage m) async {
-    setState(() {
-      _messages.insert(0, m);
-      _typingUsers.add(_gptChatUser);
-    });
-
-    List<Map<String, dynamic>> messagesHistory =
-        _messages.reversed.toList().map((m) {
-      if (m.user == _user) {
-        return Messages(role: Role.user, content: m.text).toJson();
-      } else {
-        return Messages(role: Role.assistant, content: m.text).toJson();
-      }
-    }).toList();
-
-    final request = ChatCompleteText(
-      messages: messagesHistory,
-      maxToken: 200,
-      model: Gpt40314ChatModel(), // Correct model name as a string
+  Widget _buildUI() {
+    return DashChat(
+      inputOptions: InputOptions(trailing: [
+        IconButton(
+          onPressed: _sendMediaMessage,
+          icon: const Icon(
+            Icons.image,
+          ),
+        )
+      ]),
+      currentUser: currentUser,
+      onSend: _sendMessage,
+      messages: messages,
     );
+  }
 
-    final response = await _openAI.onChatCompletion(request: request);
-
-    if (response != null) {
-      for (var element in response.choices) {
-        if (element.message != null) {
+  void _sendMessage(ChatMessage chatMessage) {
+    setState(() {
+      messages = [chatMessage, ...messages];
+    });
+    try {
+      String question = chatMessage.text;
+      List<Uint8List>? images;
+      if (chatMessage.medias?.isNotEmpty ?? false) {
+        images = [
+          File(chatMessage.medias!.first.url).readAsBytesSync(),
+        ];
+      }
+      gemini
+          .streamGenerateContent(
+        question,
+        images: images,
+      )
+          .listen((event) {
+        ChatMessage? lastMessage = messages.firstOrNull;
+        if (lastMessage != null && lastMessage.user == geminiUser) {
+          lastMessage = messages.removeAt(0);
+          String response = event.content?.parts?.fold(
+                  "", (previous, current) => "$previous ${current.text}") ??
+              "";
+          lastMessage.text += response;
+          setState(
+            () {
+              messages = [lastMessage!, ...messages];
+            },
+          );
+        } else {
+          String response = event.content?.parts?.fold(
+                  "", (previous, current) => "$previous ${current.text}") ??
+              "";
+          ChatMessage message = ChatMessage(
+            user: geminiUser,
+            createdAt: DateTime.now(),
+            text: response,
+          );
           setState(() {
-            _messages.insert(
-                0,
-                ChatMessage(
-                    user: _gptChatUser,
-                    createdAt: DateTime.now(),
-                    text: element.message!.content));
+            messages = [message, ...messages];
           });
         }
-      }
+      });
+    } catch (e) {
+      print(e);
     }
+  }
 
-    setState(() {
-      _typingUsers.remove(_gptChatUser);
-    });
+  void _sendMediaMessage() async {
+    ImagePicker picker = ImagePicker();
+    XFile? file = await picker.pickImage(
+      source: ImageSource.gallery,
+    );
+    if (file != null) {
+      ChatMessage chatMessage = ChatMessage(
+        user: currentUser,
+        createdAt: DateTime.now(),
+        text: "Describe this picture?",
+        medias: [
+          ChatMedia(
+            url: file.path,
+            fileName: "",
+            type: MediaType.image,
+          )
+        ],
+      );
+      _sendMessage(chatMessage);
+    }
   }
 }

@@ -19,11 +19,14 @@ import 'package:electronicsrent/Screens/services/cart_service.dart';
 import 'package:electronicsrent/Screens/splash.dart';
 import 'package:electronicsrent/Screens/user_details_form_screen.dart';
 import 'package:electronicsrent/Screens/services/database_service.dart';
+import 'package:electronicsrent/const.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
+  Gemini.init(apiKey: GEMINI_API_KEY);
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(const MyApp());
@@ -41,7 +44,8 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(primaryColor: Colors.cyan.shade900, fontFamily: 'Lato'),
+        theme:
+            ThemeData(primaryColor: Colors.cyan.shade900, fontFamily: 'Lato'),
         initialRoute: SplashScreen.id,
         onGenerateRoute: (settings) {
           if (settings.name == ItemDetailScreen.id) {
